@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "whiskey"
+name = "tekoi"
 version = "0.1.0"
 description = ""
 authors = ["SethShoemaker <contact@sethshoemaker.com>"]
