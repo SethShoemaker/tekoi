@@ -53,6 +53,16 @@ class test_service_container_test(unittest.TestCase):
         self.assertIsNotNone(service3)
         self.assertIsInstance(service3, Service3)
 
+    def test_bind_allows_service_to_be_resolved(self):
+        container = ServiceContainer()
+        binded_service2 = Service2()
+        container.bind(type(binded_service2), binded_service2)
+
+        resolved_service2 = container.resolve(Service2)
+        self.assertIsNotNone(resolved_service2)
+        self.assertIsInstance(resolved_service2, Service2)
+        self.assertEqual(binded_service2, resolved_service2)
+
 class construct_using_dependency_injection_test(unittest.TestCase):
 
     def test_constructs_service_with_constructor_parameters(self):

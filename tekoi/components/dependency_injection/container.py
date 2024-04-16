@@ -13,6 +13,7 @@ class ServiceContainer:
                 self.resolve(service_class)
 
     def bind(self, service_class: str, instance: object):
+        self._services.add(service_class)
         self._instances[service_class] = instance
 
     def has_instance(self, service_class: type) -> bool:

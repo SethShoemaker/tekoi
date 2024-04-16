@@ -1,5 +1,5 @@
 from .builder import AppBuilder
-from .pipeline import PipelineMember, PipelineDefinition, PipelineMemberDefinition
+from .pipeline import PipelineMember, PipelineMemberDefinitionCollection
 from .request import Request
 from .response import Response
-from .service import ServiceDefinition, ContainerDefinition
+from .service import ServiceDefinitionCollection

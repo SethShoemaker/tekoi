@@ -1,25 +1,41 @@
-from typing import Protocol
+from abc import ABC as _ABC
 
 
-class ServiceDefinitionProtocol(Protocol):
-    
-    def class_name(self) -> type:
-        pass
-
-    def lifetime(self) -> str:
-        pass
+class ServiceDefinition(_ABC):
+    pass
 
 
-class ContainerDefinitionProtocol(Protocol):
+class SingletonServiceDefinition(ServiceDefinition, _ABC):
+    pass
 
-    def get_all_service_definitions(self) -> set[ServiceDefinitionProtocol]:
-        pass
 
-    def get_singleton_service_definitions(self) -> set[ServiceDefinitionProtocol]:
-        pass
-    
-    def get_scoped_service_definitions(self) -> set[ServiceDefinitionProtocol]:
-        pass
-    
-    def get_transient_service_definitions(self) -> set[ServiceDefinitionProtocol]:
-        pass
+class RegisteredSingletonServiceDefinition(SingletonServiceDefinition):
+
+    def __init__(self, cls: type) -> None:
+        self.cls = cls
+
+
+class BindedSingletonServiceDefinition(SingletonServiceDefinition):
+
+    def __init__(self, instance: object) -> None:
+        self.instance = instance
+
+
+class ScopedServiceDefinition(ServiceDefinition, _ABC):
+    pass
+
+
+class RegisteredScopedServiceDefinition(ScopedServiceDefinition):
+
+    def __init__(self, cls: type) -> None:
+        self.cls = cls
+
+
+class TransientServiceDefinition(ServiceDefinition, _ABC):
+    pass
+
+
+class RegisteredTransientServiceDefinition(TransientServiceDefinition):
+
+    def __init__(self, cls: type) -> None:
+        self.cls = cls
