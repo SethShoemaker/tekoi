@@ -1,9 +1,8 @@
-from ..core import app_config
-from . import request, response
+from tekoi.core import app_config
 
 class PipelineMember(app_config.PipelineMemberProtocol):
 
-    def __call__(self, request: request.Request, next: callable) -> response.Response:
+    def __call__(self, request: app_config.Request, next: callable) -> app_config.Response:
         pass
 
 

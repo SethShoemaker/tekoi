@@ -1,5 +1,5 @@
 from . import pipeline, request, response, service
-from ..core import App
+from tekoi import core
 
 class AppBuilder:
 
@@ -9,8 +9,8 @@ class AppBuilder:
         self.request_class: type[request.Request] = request.Request
         self.response_class: type[response.Response] = response.Response
 
-    def build(self) -> App:
-        return App(
+    def build(self) -> core.App:
+        return core.App(
             request_class=self.request_class,
             response_class=self.response_class,
             service_definitions=self.services._service_definitions,
