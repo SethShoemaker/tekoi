@@ -47,16 +47,16 @@ class App:
 
     def __call__(self, environ, start_response):
         request = self.request_class()
-        request.set_method(environ.get('REQUEST_METHOD'))
-        request.set_path(environ.get('PATH_INFO'))
+        request.method = (environ.get('REQUEST_METHOD'))
+        request.path = (environ.get('PATH_INFO'))
 
         response = RequestHandler(self, request)()
 
-        start_response(f"{response.status_code()} {response.status_message()}", [
-            ("Content-Type", response.content_type()),
-            ("Content-Length", str(len(response.body())))
+        start_response(f"{response.status_code} {response.status_message}", [
+            ("Content-Type", response.content_type),
+            ("Content-Length", str(len(response.body)))
         ])
-        return [response.body()]
+        return [response.body]
 
 
 class RequestHandler:
