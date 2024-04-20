@@ -31,7 +31,8 @@ class SingletonContainer:
                 service_type, 
                 construct_using_dependency_injection(
                     dependent_class=service_type, 
-                    containers=[self]
+                    singleton_container=self,
+                    scoped_container=None
                 )
             )
         return self._service_instances[service_type]
@@ -106,8 +107,8 @@ class ScopedContainer:
 
 
 def construct_using_dependency_injection(dependent_class: type, 
-                                         singleton_container: SingletonContainer,
-                                         scoped_container: ScopedContainer,
+                                         singleton_container: SingletonContainer = None,
+                                         scoped_container: ScopedContainer = None,
                                          extra_services: dict[type, object] = {}
                                          ) -> object:
     signature = inspect.signature(dependent_class.__init__)
@@ -122,7 +123,7 @@ def construct_using_dependency_injection(dependent_class: type,
         if arg is None and parameter_type in extra_services:
             arg = extra_services[parameter_type]
         if arg is None:
-            raise ValueError("Cannot resolve argument " + parameter_name + " of class " + str(parameter_type))
+            raise ValueError(f"Cannot construct {dependent_class}, error resolving argument " + parameter_name + " of type " + str(parameter_type))
         else:
             args.append(arg)
     return dependent_class(*args)
