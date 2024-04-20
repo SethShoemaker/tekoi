@@ -1,4 +1,4 @@
-from tekoi.framework.routing import Route
+from .route import Route
 from tekoi.framework import Request, Response, PipelineMember
 
 class Router(PipelineMember):
@@ -18,7 +18,7 @@ class Router(PipelineMember):
             if path_params == False:
                 continue
 
-            request.routing_target = route
+            request.routing_target = route.cls
             request.path_params = path_params
             break
 

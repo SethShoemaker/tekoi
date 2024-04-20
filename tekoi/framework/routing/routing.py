@@ -1,3 +1,4 @@
+from tekoi.framework.builder import AppBuilder
 from .route import Route
 from .router import Router
 from .handler import Handler
@@ -14,4 +15,8 @@ class Routing:
         return Router(self.routes)
     
     def handler(self) -> Handler:
-        return Handler()
+        return Handler
+    
+    def register_route_clss(self, builder: AppBuilder) -> None:
+        for route in self.routes:
+            builder.services.register_scoped(route.cls)
