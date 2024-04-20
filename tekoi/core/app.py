@@ -1,4 +1,4 @@
-from tekoi.components import dependency_injection
+from . import services
 from . import app_config
 
 class App:
@@ -21,27 +21,27 @@ class App:
         self.scoped_service_definitions = [definition for definition in self.service_definitions if isinstance(definition, app_config.ScopedServiceDefinition)]
         self.transient_service_definitions = [definition for definition in self.service_definitions if isinstance(definition, app_config.TransientServiceDefinition)]
 
-        self.singleton_container = dependency_injection.ServiceContainer()
-        self.register_singleton_services()
-        self.register_singleton_pipeline_members()
+        self.singleton_container = services.SingletonContainer()
+        self.register_singleton_service_types()
+        self.register_and_instantiate_singleton_pipeline_members()
 
-    def register_singleton_services(self) -> None:
+    def register_singleton_service_types(self) -> None:
         for definition in self.singleton_service_definitions:
             if isinstance(definition, app_config.BindedSingletonServiceDefinition):
-                self.singleton_container.bind(type(definition.instance), definition.instance)
+                self.singleton_container.bind_service_type(type(definition.instance), definition.instance)
                 continue
             if isinstance(definition, app_config.RegisteredSingletonServiceDefinition):
-                self.singleton_container.register_services([definition.cls])
+                self.singleton_container.register_service_type(definition.cls)
                 continue
             raise NotImplementedError()
 
-    def register_singleton_pipeline_members(self) -> None:
+    def register_and_instantiate_singleton_pipeline_members(self) -> None:
         for definition in self.singleton_pipeline_member_definitions:
             if isinstance(definition, app_config.BindedSingletonPipelineMemberDefinition):
-                self.singleton_container.bind(type(definition.instance), definition.instance)
+                self.singleton_container.bind_service_type(type(definition.instance), definition.instance)
                 continue
             if isinstance(definition, app_config.RegisteredSingletonPipelineMemberDefinition):
-                self.singleton_container.register_services([definition.cls], insantiate_immediately=True)
+                self.singleton_container.register_service_type(definition.cls, insantiate_immediately=True)
                 continue
             raise NotImplementedError()
 
@@ -76,21 +76,30 @@ class RequestHandler:
 
         self.singleton_container = app.singleton_container
         
-        self.scoped_container = dependency_injection.ServiceContainer()
-        self.register_scoped_services()
-        self.register_scoped_pipeline_members()
+        self.scoped_container = services.ScopedContainer()
+        self.scoped_container.set_singleton_container(self.singleton_container)
+        self.register_transient_service_types()
+        self.register_scoped_service_types()
+        self.register_and_instantiate_scoped_pipleline_members()
 
-    def register_scoped_services(self) -> None:
+    def register_scoped_service_types(self) -> None:
         for definition in self.scoped_service_definitions:
             if isinstance(definition, app_config.RegisteredScopedServiceDefinition):
-                self.scoped_container.register_services([definition.cls])
+                self.scoped_container.register_scoped_service_type(definition.cls)
                 continue
             raise NotImplementedError()
         
-    def register_scoped_pipeline_members(self) -> None:
+    def register_transient_service_types(self) -> None:
+        for definition in self.transient_service_definitions:
+            if isinstance(definition, app_config.RegisteredTransientServiceDefinition):
+                self.scoped_container.register_transient_service_type(definition.cls)
+                continue
+            raise NotImplementedError()
+        
+    def register_and_instantiate_scoped_pipleline_members(self) -> None:
         for definition in self.scoped_pipeline_member_definitions:
             if isinstance(definition, app_config.RegisteredScopedPipelineMemberDefinition):
-                self.scoped_container.register_services([definition.cls])
+                self.scoped_container.register_scoped_service_type(definition.cls, insantiate_immediately=True)
                 continue
             raise NotImplementedError()
 
@@ -107,16 +116,12 @@ class RequestHandler:
     def get_pipeline_member_instance(self, definition: app_config.PipelineMemberDefinition) -> app_config.PipelineMemberProtocol:
         if isinstance(definition, app_config.SingletonPipelineMemberDefinition):
             if isinstance(definition, app_config.RegisteredSingletonPipelineMemberDefinition):
-                return self.singleton_container.resolve(definition.cls)
+                return self.singleton_container.resolve_service(definition.cls)
             if isinstance(definition, app_config.BindedSingletonPipelineMemberDefinition):
                 return definition.instance
             raise NotImplementedError()
         if isinstance(definition, app_config.ScopedPipelineMemberDefinition):
             if isinstance(definition, app_config.RegisteredScopedPipelineMemberDefinition):
-                return dependency_injection.construct_using_dependency_injection(
-                    definition.cls, 
-                    containers=[self.singleton_container, self.scoped_container], 
-                    transient_services=[definition.cls for definition in self.transient_service_definitions if isinstance(definition, app_config.RegisteredTransientServiceDefinition)]
-                )
+                return self.scoped_container.resolve_scoped_service(definition.cls)
             raise NotImplementedError()
         raise NotImplementedError()

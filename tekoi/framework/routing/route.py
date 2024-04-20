@@ -1,7 +1,8 @@
 from tekoi.framework import PipelineMember
 
 class Route:
-    
-    method: str|None = None
-    path: str|None = None
-    cls: type[PipelineMember] = None
+
+    def __init__(self, method: str = None, path: str = None, cls: type[PipelineMember] = None) -> None:
+        self.method = method
+        self.path = path
+        self.cls = cls
