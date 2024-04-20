@@ -116,12 +116,12 @@ class RequestHandler:
     def get_pipeline_member_instance(self, definition: app_config.PipelineMemberDefinition) -> app_config.PipelineMemberProtocol:
         if isinstance(definition, app_config.SingletonPipelineMemberDefinition):
             if isinstance(definition, app_config.RegisteredSingletonPipelineMemberDefinition):
-                return self.singleton_container.resolve_service(definition.cls)
+                return self.singleton_container.resolve_service(definition.cls) # type: ignore
             if isinstance(definition, app_config.BindedSingletonPipelineMemberDefinition):
                 return definition.instance
             raise NotImplementedError()
         if isinstance(definition, app_config.ScopedPipelineMemberDefinition):
             if isinstance(definition, app_config.RegisteredScopedPipelineMemberDefinition):
-                return self.scoped_container.resolve_scoped_service(definition.cls)
+                return self.scoped_container.resolve_scoped_service(definition.cls) # type: ignore
             raise NotImplementedError()
         raise NotImplementedError()

@@ -1,5 +1,6 @@
 from .route import Route
 from tekoi.framework import Request, Response, PipelineMember
+import typing
 
 class Router(PipelineMember):
 
@@ -9,7 +10,7 @@ class Router(PipelineMember):
         ):
         self.routes = routes
 
-    def __call__(self, request: Request, next: callable) -> Response:
+    def __call__(self, request: Request, next: typing.Callable) -> Response:
 
         for route in self.routes:
 
@@ -19,7 +20,7 @@ class Router(PipelineMember):
                 continue
 
             request.routing_target = route.cls
-            request.path_params = path_params
+            request.path_params = path_params # type: ignore
             break
 
         return next(request)
@@ -29,13 +30,16 @@ class Router(PipelineMember):
         if request.method != route.method:
             return  False
         
+        if request.path is None:
+            raise ValueError("Request has no 'path' attribute")
+        
         request_path_segments: list[str] = [segment for segment in request.path.split('/') if segment]
         route_path_segments: list[str] = [segment for segment in route.path.split('/') if segment]
 
         if len(request_path_segments) != len(route_path_segments):
             return False
 
-        path_params: dict[str, str] = []
+        path_params: dict[str, str] = {}
 
         for i in range(len(request_path_segments)):
             request_path_segment = request_path_segments[i]

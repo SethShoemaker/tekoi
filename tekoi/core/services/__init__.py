@@ -1,4 +1,4 @@
-import inspect
+import inspect as _inspect
 
 class SingletonContainer:
     
@@ -7,10 +7,10 @@ class SingletonContainer:
         self._service_instances: dict[type, object] = dict()
         self.bind_service_type(SingletonContainer, self)
 
-    def register_service_type(self, service_type: list[type], insantiate_immediately: bool = False) -> None:
+    def register_service_type(self, service_type: type, insantiate_immediately: bool = False) -> None:
         self._service_types.add(service_type)
         if insantiate_immediately:
-            self.resolve(service_type)
+            self.resolve_service(service_type)
 
     def register_service_types(self, service_types:  list[type], insantiate_immediately: bool = False) -> None:
         for service_type in service_types:
@@ -41,7 +41,7 @@ class SingletonContainer:
 class ScopedContainer:
 
     def __init__(self) -> None:
-        self._singleton_container: SingletonContainer = None
+        self._singleton_container: SingletonContainer
         self._transient_service_types: set[type] = set()
         self._scoped_service_types: set[type] = set()
         self._scoped_service_instances: dict[type, object] = dict()
@@ -57,7 +57,7 @@ class ScopedContainer:
         for service_type in service_types:
             self.register_transient_service_type(service_type)
 
-    def register_scoped_service_type(self, service_type: list[type], insantiate_immediately: bool = False) -> None:
+    def register_scoped_service_type(self, service_type:type, insantiate_immediately: bool = False) -> None:
         self._scoped_service_types.add(service_type)
         if insantiate_immediately:
             self.resolve_scoped_service(service_type)
@@ -107,11 +107,11 @@ class ScopedContainer:
 
 
 def construct_using_dependency_injection(dependent_class: type, 
-                                         singleton_container: SingletonContainer = None,
-                                         scoped_container: ScopedContainer = None,
+                                         singleton_container: SingletonContainer|None = None,
+                                         scoped_container: ScopedContainer|None = None,
                                          extra_services: dict[type, object] = {}
                                          ) -> object:
-    signature = inspect.signature(dependent_class.__init__)
+    signature = _inspect.signature(dependent_class.__init__) # type: ignore
     parameters = {name: parameter.annotation for name, parameter in signature.parameters.items() if parameter.name != "self"}
     args = []
     for parameter_name, parameter_type in parameters.items():

@@ -11,10 +11,10 @@ class Routing:
     def add_route(self, route: Route) -> None:
         self.routes.append(route)
 
-    def router(self) -> Router:
+    def router(self):
         return Router(self.routes)
     
-    def handler(self) -> Handler:
+    def handler(self):
         return Handler
     
     def register_route_clss(self, builder: AppBuilder) -> None:

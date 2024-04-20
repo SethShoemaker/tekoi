@@ -1,4 +1,4 @@
 class Request:
 
-    method: str = None
-    path: str = None
+    method: str|None = None
+    path: str|None = None

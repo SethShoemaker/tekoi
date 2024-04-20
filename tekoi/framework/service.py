@@ -1,4 +1,4 @@
-from ..core import app_config
+from tekoi.core import app_config
 
 class ServiceDefinitionCollection:
     

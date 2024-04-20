@@ -1,4 +1,4 @@
-from . import pipeline, request, response, service
+from . import pipeline, service
 from tekoi import core
 
 class AppBuilder:
@@ -6,8 +6,8 @@ class AppBuilder:
     def __init__(self) -> None:
         self.services: service.ServiceDefinitionCollection = service.ServiceDefinitionCollection()
         self.pipeline: pipeline.PipelineMemberDefinitionCollection = pipeline.PipelineMemberDefinitionCollection()
-        self.request_class: type[request.Request] = request.Request
-        self.response_class: type[response.Response] = response.Response
+        self.request_class: type[pipeline.Request] = pipeline.Request
+        self.response_class: type[pipeline.Response] = pipeline.Response
 
     def build(self) -> core.App:
         return core.App(

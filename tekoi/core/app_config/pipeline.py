@@ -1,12 +1,10 @@
 from abc import ABC as _ABC
 from typing import Protocol as _Protocol
-from .request import Request as _Request
-from .response import Response as _Response
 
 
 class PipelineMemberProtocol(_Protocol):
     
-    def __call__(self, request: _Request, next: callable) -> _Response:
+    def __call__(self, request, next):
         pass
 
 
