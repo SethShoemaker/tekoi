@@ -4,9 +4,11 @@ import typing
 
 class Request(app_config.Request):
 
-    routing_target: type[PipelineMember]|None = None
+    routing_target = None
 
-    path_params: dict[str, str]| None = None
+    routing_path_params: dict[str, str]| None = None
+
+    sessions_session_data = None
 
 
 class Response(app_config.Response):

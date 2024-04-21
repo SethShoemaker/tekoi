@@ -20,7 +20,7 @@ class Router(PipelineMember):
                 continue
 
             request.routing_target = route.cls
-            request.path_params = path_params # type: ignore
+            request.routing_path_params = path_params # type: ignore
             break
 
         return next(request)
