@@ -11,7 +11,7 @@ class Handler(_PipelineMember):
         self._router = router
         self.scoped_container = scoped_container
 
-    def __call__(self, request: _Request, next: _typing.Callable) -> _Response:
+    def __call__(self, request: _Request, next: _typing.Callable[[_Request], _Response]) -> _Response:
         if request.routing_target is None:
             return next(request)
         

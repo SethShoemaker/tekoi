@@ -18,7 +18,7 @@ class Response(app_config.Response):
 class PipelineMember(app_config.PipelineMemberProtocol):
 
     @abc.abstractmethod
-    def __call__(self, request: Request, next: typing.Callable) -> Response:
+    def __call__(self, request: Request, next: typing.Callable[[Request], Response]) -> Response:
         pass
 
 
