@@ -37,3 +37,27 @@ class TestRouter(unittest.TestCase):
         match_result = router.match_route("GET", "/hello", "PUT", "/hello")
 
         self.assertFalse(match_result)
+
+    def test_match_route__returns_returns_dict_with_partial_wildcard(self):
+
+        router = Router([])
+
+        match_result = router.match_route("GET", "/hello/world", "GET", "/*/world")
+
+        self.assertDictEqual({}, match_result)
+
+    def test_match_route__returns_false_with_nonmatching_paths_and_partial_wildcard(self):
+
+        router = Router([])
+
+        match_result = router.match_route("GET", "/hello/world", "GET", "/*/world/*")
+
+        self.assertFalse(match_result)
+
+    def test_match_route__returns_dict_with_complete_wildcard(self):
+
+        router = Router([])
+
+        match_result = router.match_route("GET", "/hello/python/world", "GET", "/hello/**")
+
+        self.assertDictEqual({}, match_result)

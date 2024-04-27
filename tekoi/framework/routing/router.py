@@ -38,23 +38,38 @@ class Router(PipelineMember):
         request_path_segments = [segment for segment in request_path.split('/') if segment]
         route_path_segments = [segment for segment in route_path.split('/') if segment]
 
-        if len(request_path_segments) != len(route_path_segments):
-            return False
-
         path_params: dict[str, str] = {}
 
         for i in range(len(request_path_segments)):
+
+            if not 0 <= i < len(request_path_segments):
+                return False
+            
+            if not 0 <= i < len(route_path_segments):
+                return False
+
             request_path_segment = request_path_segments[i]
             route_path_segment = route_path_segments[i]
 
             route_path_segment_is_variable = route_path_segment[0] == ":"
+            route_path_segment_is_partial_wildcard = route_path_segment == "*"
+            route_path_segment_is_complete_wildcard = route_path_segment == "**"
             path_segments_match = request_path_segment == route_path_segment
 
-            if (route_path_segment_is_variable == False) and (path_segments_match == False):
+            if ((route_path_segment_is_variable == False) and 
+                (path_segments_match == False) and 
+                (route_path_segment_is_partial_wildcard == False) and 
+                (route_path_segment_is_complete_wildcard == False)):
                 return False
             
-            if (route_path_segment_is_variable == False) and (path_segments_match):
+            if (route_path_segment_is_variable == False) and path_segments_match:
                 continue
+
+            if route_path_segment_is_partial_wildcard:
+                continue
+
+            if route_path_segment_is_complete_wildcard:
+                return path_params
 
             route_path_segment_variable_name = route_path_segment[1:]
             route_path_segment_variable_value = request_path_segment
