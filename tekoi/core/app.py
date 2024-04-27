@@ -8,7 +8,8 @@ class App:
                  request_class: type[_app_config.Request],
                  response_class: type[_app_config.Response],
                  service_definitions: list[_app_config.ServiceDefinition],
-                 pipeline_member_definitions: list[_app_config.PipelineMemberDefinition]
+                 pipeline_member_definitions: list[_app_config.PipelineMemberDefinition],
+                 background_service_definitions: list[_app_config.BackgroundServiceDefinition]
                  ):
         self.request_class = request_class
         self.response_class = response_class
@@ -25,6 +26,10 @@ class App:
         self.singleton_container = _services.SingletonContainer()
         self.register_singleton_service_types()
         self.register_and_instantiate_singleton_pipeline_members()
+
+        self.background_service_definitions = background_service_definitions
+        self.register_and_instantiate_background_services()
+        self.start_background_services()
 
     def register_singleton_service_types(self) -> None:
         for definition in self.singleton_service_definitions:
@@ -45,6 +50,17 @@ class App:
                 self.singleton_container.register_service_type(definition.cls, insantiate_immediately=True)
                 continue
             raise NotImplementedError()
+        
+    def register_and_instantiate_background_services(self) -> None:
+        for definition in self.background_service_definitions:
+            self.singleton_container.register_service_type(definition.cls, insantiate_immediately=True)
+
+    def start_background_services(self) -> None:
+        for definition in self.background_service_definitions:
+            instance = self.singleton_container.resolve_service(definition.cls)
+            if not isinstance(instance, _app_config.BackgroundService):
+                raise TypeError("BackgroundService must inherit from BackgroundService")
+            instance.start()
 
     def __call__(self, environ, start_response):
         webob_request = _webob.Request(environ)
