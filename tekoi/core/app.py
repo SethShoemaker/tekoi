@@ -68,6 +68,7 @@ class App:
         app_request.method = webob_request.method
         app_request.path = webob_request.path
         app_request.cookies = _app_config.RequestCookieCollection([_app_config.RequestCookie(name, value) for name, value in webob_request.cookies.items()])
+        app_request.body = webob_request.body
 
         app_response = RequestHandler(self, app_request)()
         webob_response = _webob.Response()

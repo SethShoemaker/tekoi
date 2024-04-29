@@ -18,3 +18,4 @@ class Request:
     method: str|None = None
     path: str|None = None
     cookies: RequestCookieCollection|None = None
+    body: str|None = None
