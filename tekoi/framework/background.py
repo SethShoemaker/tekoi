@@ -1,13 +1,13 @@
-from tekoi.core import app_config
+from tekoi.core import startup as _startup
 
-class BackgroundService(app_config.BackgroundService):
+class BackgroundService(_startup.BackgroundService):
     pass
 
 
 class BackgroundServiceDefinitionCollection:
 
     def __init__(self) -> None:
-        self._background_service_definitions: list[app_config.BackgroundServiceDefinition] = []
+        self._background_service_definitions: list[_startup.BackgroundServiceDefinition] = []
 
     def add(self, cls: type[BackgroundService]) -> None:
-        self._background_service_definitions.append(app_config.BackgroundServiceDefinition(cls))
+        self._background_service_definitions.append(_startup.BackgroundServiceDefinition(cls))

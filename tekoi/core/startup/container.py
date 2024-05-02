@@ -11,13 +11,15 @@ class SingletonServiceDefinition(ServiceDefinition, _ABC):
 
 class RegisteredSingletonServiceDefinition(SingletonServiceDefinition):
 
-    def __init__(self, cls: type) -> None:
-        self.cls = cls
+    def __init__(self, interface: type, implementation: type) -> None:
+        self.interface = interface
+        self.implementation = implementation
 
 
 class BindedSingletonServiceDefinition(SingletonServiceDefinition):
 
-    def __init__(self, instance: object) -> None:
+    def __init__(self, interface: type, instance: object) -> None:
+        self.interface = interface
         self.instance = instance
 
 
@@ -27,8 +29,9 @@ class ScopedServiceDefinition(ServiceDefinition, _ABC):
 
 class RegisteredScopedServiceDefinition(ScopedServiceDefinition):
 
-    def __init__(self, cls: type) -> None:
-        self.cls = cls
+    def __init__(self, interface: type, implementation: type) -> None:
+        self.interface = interface
+        self.implementation = implementation
 
 
 class TransientServiceDefinition(ServiceDefinition, _ABC):
@@ -37,5 +40,6 @@ class TransientServiceDefinition(ServiceDefinition, _ABC):
 
 class RegisteredTransientServiceDefinition(TransientServiceDefinition):
 
-    def __init__(self, cls: type) -> None:
-        self.cls = cls
+    def __init__(self, interface: type, implementation: type) -> None:
+        self.interface = interface
+        self.implementation = implementation

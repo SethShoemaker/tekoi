@@ -1,8 +1,8 @@
-from tekoi.core import app_config
+from tekoi.core import startup as _startup
 import abc
 import typing
 
-class Request(app_config.Request):
+class Request(_startup.Request):
 
     routing_target = None
 
@@ -11,11 +11,11 @@ class Request(app_config.Request):
     sessions_session_data = None
 
 
-class Response(app_config.Response):
+class Response(_startup.Response):
     pass
 
 
-class PipelineMember(app_config.PipelineMemberProtocol):
+class PipelineMember(_startup.PipelineMemberProtocol):
 
     @abc.abstractmethod
     def __call__(self, request: Request, next: typing.Callable[[Request], Response]) -> Response:
@@ -25,13 +25,13 @@ class PipelineMember(app_config.PipelineMemberProtocol):
 class PipelineMemberDefinitionCollection:
 
     def __init__(self) -> None:
-        self._pipeline_member_definitions: list[app_config.PipelineMemberDefinition] = []
+        self._pipeline_member_definitions: list[_startup.PipelineMemberDefinition] = []
 
     def register_singleton(self, member: type[PipelineMember]) -> None:
-        self._pipeline_member_definitions.append(app_config.RegisteredSingletonPipelineMemberDefinition(member))
+        self._pipeline_member_definitions.append(_startup.RegisteredSingletonPipelineMemberDefinition(member))
 
     def bind_singleton(self, member: PipelineMember) -> None:
-        self._pipeline_member_definitions.append(app_config.BindedSingletonPipelineMemberDefinition(member))
+        self._pipeline_member_definitions.append(_startup.BindedSingletonPipelineMemberDefinition(member))
 
     def register_scoped(self, member: type[PipelineMember]) -> None:
-        self._pipeline_member_definitions.append(app_config.RegisteredScopedPipelineMemberDefinition(member))
+        self._pipeline_member_definitions.append(_startup.RegisteredScopedPipelineMemberDefinition(member))

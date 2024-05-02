@@ -1,3 +1,3 @@
 from .app import App
-from .app_config import *
+from .startup import *
 from .services import *
