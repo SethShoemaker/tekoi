@@ -19,4 +19,4 @@ class Routing:
     
     def register_route_clss(self, builder: AppBuilder) -> None:
         for route in self.routes:
-            builder.services.register_scoped(route.cls)
+            builder.services.register_scoped(route.cls, route.cls)

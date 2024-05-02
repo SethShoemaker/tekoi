@@ -66,7 +66,7 @@ class ScopedContainer:
         self._scoped_instances[interface] = instance
 
     def resolve_scoped_service(self, interface: type) -> object|None:
-        if interface in self._scoped_implementations:
+        if interface not in self._scoped_implementations:
             return None
         if self._scoped_instances[interface] is None:
             self._scoped_instances[interface] = construct_using_dependency_injection(
