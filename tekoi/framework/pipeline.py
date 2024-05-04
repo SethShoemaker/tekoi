@@ -1,24 +1,14 @@
 from tekoi.core import startup as _startup
 import abc
 import typing
-
-class Request(_startup.Request):
-
-    routing_target = None
-
-    routing_path_params: dict[str, str]| None = None
-
-    sessions_session_data = None
-
-
-class Response(_startup.Response):
-    pass
+from .request import Request as _Request
+from .response import Response as _Response
 
 
 class PipelineMember(_startup.PipelineMemberProtocol):
 
     @abc.abstractmethod
-    def __call__(self, request: Request, next: typing.Callable[[Request], Response]) -> Response:
+    def __call__(self, request: _Request, next: typing.Callable[[_Request], _Response]) -> _Response:
         pass
 
 
