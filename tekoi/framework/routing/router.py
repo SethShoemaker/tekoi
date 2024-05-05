@@ -1,16 +1,18 @@
-from .route import Route
-from tekoi.framework import Request, Response, PipelineMember
+from .route import Route as _Route
+from tekoi.framework import (Request as _Request, 
+                             Response as _Response, 
+                             PipelineMember as _PipelineMember)
 import typing
 
-class Router(PipelineMember):
+class Router(_PipelineMember):
 
     def __init__(
             self,
-            routes: list[Route]
+            routes: list[_Route]
         ):
         self.routes = routes
 
-    def __call__(self, request: Request, next: typing.Callable[[Request], Response]) -> Response:
+    def __call__(self, request: _Request, next: typing.Callable[[_Request], _Response]) -> _Response:
 
         for route in self.routes:
 

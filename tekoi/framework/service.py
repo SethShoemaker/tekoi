@@ -1,8 +1,10 @@
 from tekoi.core import startup as _startup
+from .builder import AppBuilder as _AppBuilder
 
 class ServiceDefinitionCollection:
     
-    def __init__(self) -> None:
+    def __init__(self, builder: _AppBuilder) -> None:
+        self._builder = builder
         self._service_definitions: list[_startup.ServiceDefinition] = []
 
     def register_singleton(self, interface: type, implementation: type) -> None:

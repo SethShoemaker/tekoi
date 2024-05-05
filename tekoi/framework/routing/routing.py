@@ -1,22 +1,12 @@
-from tekoi.framework.builder import AppBuilder
-from .route import Route
-from .router import Router
-from .handler import Handler
+from .route import Route as _Route
+from ..builder import AppBuilder as _AppBuilder
 
-class Routing:
+class RoutingDefinition:
 
-    def __init__(self) -> None:
-        self.routes: list[Route] = []
+    def __init__(self, builder: _AppBuilder) -> None:
+        self._builder = builder
+        self.routes: list[_Route] = []
 
-    def add_route(self, route: Route) -> None:
+    def add_route(self, route: _Route) -> None:
         self.routes.append(route)
-
-    def router(self):
-        return Router(self.routes)
-    
-    def handler(self):
-        return Handler
-    
-    def register_route_clss(self, builder: AppBuilder) -> None:
-        for route in self.routes:
-            builder.services.register_scoped(route.cls, route.cls)
+        self._builder.services.register_scoped(route.cls, route.cls)
