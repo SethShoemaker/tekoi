@@ -43,3 +43,13 @@ def not_found(body: bytes) -> Response:
 
 def not_found_json(payload:dict) -> Response:
     return not_found(_json.dumps(payload).encode())
+
+def internal_server_error(body: bytes) -> Response:
+    res = Response()
+    res.body = body
+    res.content_length = len(body)
+    res.status_code = 500
+    return res
+
+def internal_server_error_json(payload: dict|list) -> Response:
+    return internal_server_error(_json.dumps(payload).encode())
