@@ -69,6 +69,11 @@ class App:
         app_request.path = webob_request.path
         app_request.cookies = _startup.RequestCookieCollection([_startup.RequestCookie(name, value) for name, value in webob_request.cookies.items()])
         app_request.body = webob_request.body
+        app_request.query = dict()
+        for key, value in webob_request.GET.items():
+            if key not in app_request.query:
+                app_request.query[key] = list()
+            app_request.query[key].append(value)
 
         app_response = RequestHandler(self, app_request)()
         webob_response = _webob.Response()

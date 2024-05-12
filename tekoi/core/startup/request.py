@@ -19,3 +19,4 @@ class Request:
     path: str|None = None
     cookies: RequestCookieCollection|None = None
     body: str|None = None
+    query: dict[str, list[str]]|None = None
