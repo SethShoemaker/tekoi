@@ -15,4 +15,5 @@ class Handler(_PipelineMember):
             res = next(request)
             return res
         except Exception as e:
+            print(e)
             return _internal_server_error(bytes())
